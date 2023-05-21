@@ -2,7 +2,7 @@
 Author: BHM-Bob 2262029386@qq.com
 Date: 2023-05-20 23:54:25
 LastEditors: BHM-Bob 2262029386@qq.com
-LastEditTime: 2023-05-21 15:25:59
+LastEditTime: 2023-05-21 16:18:17
 Description: 
 '''
 """
@@ -48,7 +48,7 @@ setup(
         # "Programming Language :: Python :: 3 :: Only",
     ],
         
-    keywords = ["mbapy", "Utilities", "plot"],
+    keywords = ["mbapy", "deeplearning", "oneflow"],
     description = "basic for all in neural network for oneflow",
     long_description = long_description,
     long_description_content_type='text/markdown',
@@ -67,5 +67,10 @@ setup(
     install_requires=requires,
 )
 
+# pip install .
+
+# or
+
 # python setup.py sdist
 # twine upload dist/bann_flow-0.0.1.tar.gz
+# pip install --upgrade bann_flow
