@@ -2,7 +2,7 @@
 Author: BHM-Bob 2262029386@qq.com
 Date: 2023-05-20 23:54:25
 LastEditors: BHM-Bob 2262029386@qq.com
-LastEditTime: 2023-05-21 16:18:17
+LastEditTime: 2023-05-22 16:11:30
 Description: 
 '''
 """
@@ -27,7 +27,7 @@ here = pathlib.Path(__file__).parent.resolve()
 long_description = (here / "README.md").read_text(encoding="utf-8")
 
 requires = [
-    "oneflow >= 0.8.0",
+    "oneflow >= 0.9.0",
 ]
 
 setup(
