@@ -1,14 +1,14 @@
 
-
 from functools import wraps
 
-import sys, os, time
+import sys, os, time, shutil
 import chardet, json, glob
 import math
 
 import numpy as np
 
 import oneflow as flow
+import oneflow.nn as nn
 
 __NO_ERR__ = False
 _Params = {
@@ -322,6 +322,35 @@ def save_checkpoint(epoch, args:GlobalSettings, model, optimizer, loss, other:di
     filename = os.path.join(args.modelRoot,
                             f"checkpoint_{tailName:s}_{time.asctime(time.localtime()).replace(':', '-'):s}.pth.tar")
     flow.save(state, filename)
+    
+def save_graph(epoch, args:GlobalSettings, model:nn.Graph, loss, other:dict, tailName:str):
+    state = {
+        "epoch": epoch + 1,
+        "arch": args.arch,
+        "loss": loss,
+        "args":args.toDict(),
+    }
+    state.update(other)
+    dir_name = os.path.join(args.model_root, f"checkpoint_{tailName:s}_{time.asctime(time.localtime()).replace(':', '-'):s}")
+    shutil.rmtree(dir_name, ignore_errors=True)
+    flow.save(model.state_dict(), os.path.join(dir_name, 'model'))
+    flow.save(state, os.path.join(dir_name, 'state.tar'))
+    
+def load_graph(dir_name:str, args:GlobalSettings, model:nn.Graph,
+               default_state:dict = {}) -> tuple[GlobalSettings, nn.Graph, float, int, dict]:
+    model_dir = os.path.join(dir_name, 'model')
+    cp_path = os.path.join(dir_name, 'state.tar')
+    if os.path.isdir(model_dir) and len(os.listdir(model_dir)) > 0 and os.path.exists(cp_path):
+        model.load_state_dict(flow.load(model_dir))
+        checkpoint = flow.load(cp_path)
+        loss = checkpoint['args']
+        epoch = checkpoint['epoch']
+        args.mp.mprint(f"loaded checkpoint '{dir_name}' (epoch {checkpoint['epoch']})")
+        return model, loss, epoch, checkpoint
+    else:
+        args.mp.mprint(f"no checkpoint found at '{dir_name}'")
+        args.mp.logOnly(str(model))
+        return model, -1, 0, default_state
 
 def resume(args, model, optimizer, other:dict = {}):
     if args.resume and os.path.isfile(args.resume):
