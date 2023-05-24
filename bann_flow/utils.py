@@ -343,7 +343,7 @@ def load_graph(dir_name:str, args:GlobalSettings, model:nn.Graph,
     if os.path.isdir(model_dir) and len(os.listdir(model_dir)) > 0 and os.path.exists(cp_path):
         model.load_state_dict(flow.load(model_dir))
         checkpoint = flow.load(cp_path)
-        loss = checkpoint['args']
+        loss = checkpoint['loss']
         epoch = checkpoint['epoch']
         args.mp.mprint(f"loaded checkpoint '{dir_name}' (epoch {checkpoint['epoch']})")
         return model, loss, epoch, checkpoint
